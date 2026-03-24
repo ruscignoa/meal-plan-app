@@ -2,8 +2,6 @@ const CateringOrder = require('../models/CateringOrder');
 const MenuItem = require('../models/MenuItem');
 const { validationResult } = require('express-validator');
 
-const SERVICE_FEE_RATE = 0.18;
-
 exports.createOrder = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -13,7 +11,6 @@ exports.createOrder = async (req, res) => {
   try {
     const { customerName, customerEmail, customerPhone, eventDate, eventTime, eventLocation, guestCount, items, specialInstructions } = req.body;
 
-    // Validate and resolve menu items
     const orderItems = [];
     let subtotal = 0;
 
@@ -27,20 +24,19 @@ exports.createOrder = async (req, res) => {
       }
 
       const quantity = item.quantity;
-      const itemSubtotal = menuItem.pricePerPerson * quantity;
+      const itemSubtotal = menuItem.price * quantity;
       subtotal += itemSubtotal;
 
       orderItems.push({
         menuItem: menuItem._id,
         name: menuItem.name,
         quantity,
-        pricePerPerson: menuItem.pricePerPerson,
+        unitPrice: menuItem.price,
         subtotal: itemSubtotal,
       });
     }
 
-    const serviceFee = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
-    const total = Math.round((subtotal + serviceFee) * 100) / 100;
+    subtotal = Math.round(subtotal * 100) / 100;
 
     const order = new CateringOrder({
       customerName,
@@ -53,8 +49,7 @@ exports.createOrder = async (req, res) => {
       items: orderItems,
       specialInstructions: specialInstructions || '',
       subtotal,
-      serviceFee,
-      total,
+      total: subtotal,
     });
 
     await order.save();

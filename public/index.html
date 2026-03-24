@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catering Order Builder</title>
+  <title>Catering Order Builder | Joe's Italian Deli</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
     <div class="container">
-      <h1>Catering Order Builder</h1>
-      <p class="subtitle">Build your perfect catering menu for any event</p>
+      <h1>Joe's Italian Deli</h1>
+      <p class="subtitle">Catering Order Builder</p>
+      <p class="tagline">Authentic Italian from the Bronx since 1980 &bull; 685 E. 187th Street</p>
     </div>
   </header>
 
@@ -18,21 +19,18 @@
     <div class="builder-layout">
       <!-- Left: Menu Selection -->
       <section class="menu-section">
-        <h2>Select Your Menu</h2>
+        <h2>Build Your Catering Order</h2>
 
         <div class="filters">
           <button class="filter-btn active" data-category="all">All</button>
-          <button class="filter-btn" data-category="appetizers">Appetizers</button>
-          <button class="filter-btn" data-category="entrees">Entrees</button>
-          <button class="filter-btn" data-category="sides">Sides</button>
-          <button class="filter-btn" data-category="desserts">Desserts</button>
-          <button class="filter-btn" data-category="beverages">Beverages</button>
-        </div>
-
-        <div class="dietary-filters">
-          <label><input type="checkbox" value="vegetarian"> Vegetarian</label>
-          <label><input type="checkbox" value="vegan"> Vegan</label>
-          <label><input type="checkbox" value="gluten-free"> Gluten-Free</label>
+          <button class="filter-btn" data-category="catering-packages">Catering Packages</button>
+          <button class="filter-btn" data-category="group-lunch">Group Lunch</button>
+          <button class="filter-btn" data-category="sandwiches">Sandwiches</button>
+          <button class="filter-btn" data-category="specialty-sandwiches">Specialty Sandwiches</button>
+          <button class="filter-btn" data-category="pasta">Pasta</button>
+          <button class="filter-btn" data-category="chicken">Chicken</button>
+          <button class="filter-btn" data-category="meat-seafood">Meat &amp; Seafood</button>
+          <button class="filter-btn" data-category="vegetables">Vegetables</button>
         </div>
 
         <div id="menu-items" class="menu-grid">
@@ -49,14 +47,6 @@
         </div>
 
         <div id="order-totals" class="order-totals" style="display:none;">
-          <div class="total-row">
-            <span>Subtotal</span>
-            <span id="subtotal">$0.00</span>
-          </div>
-          <div class="total-row">
-            <span>Service Fee (18%)</span>
-            <span id="service-fee">$0.00</span>
-          </div>
           <div class="total-row total-final">
             <span>Total</span>
             <span id="total">$0.00</span>
@@ -88,7 +78,7 @@
             </div>
             <div class="form-group">
               <label for="guestCount">Number of Guests *</label>
-              <input type="number" id="guestCount" min="1" value="10" required>
+              <input type="number" id="guestCount" min="1" value="20" required>
             </div>
             <div class="form-group">
               <label for="eventDate">Event Date *</label>
@@ -104,7 +94,7 @@
             </div>
             <div class="form-group full-width">
               <label for="specialInstructions">Special Instructions</label>
-              <textarea id="specialInstructions" rows="3" placeholder="Allergies, setup preferences, etc."></textarea>
+              <textarea id="specialInstructions" rows="3" placeholder="Allergies, setup preferences, specific sandwich selections, etc."></textarea>
             </div>
           </div>
 
@@ -129,10 +119,18 @@
         <h2>Order Submitted!</h2>
         <p>Your catering order has been received. We'll send a confirmation to <strong id="confirm-email"></strong>.</p>
         <p>Order ID: <strong id="confirm-id"></strong></p>
+        <p class="contact-note">Questions? Call us at <strong>718.367.7979</strong></p>
         <button class="btn-primary" onclick="location.reload()">Place Another Order</button>
       </div>
     </div>
   </main>
+
+  <footer>
+    <div class="container">
+      <p>Joe's Italian Deli &bull; 685 E. 187th Street, Bronx, NY 10458 &bull; 718.367.7979</p>
+      <p>Mon&ndash;Sat 8:30am&ndash;5:30pm &bull; Sun 8:30am&ndash;3:30pm</p>
+    </div>
+  </footer>
 
   <script src="app.js"></script>
 </body>

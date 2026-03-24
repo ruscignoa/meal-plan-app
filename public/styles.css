@@ -6,7 +6,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f5f5;
+  background: #faf8f5;
   color: #333;
   line-height: 1.6;
 }
@@ -17,22 +17,46 @@ body {
   padding: 0 20px;
 }
 
-/* Header */
+/* Header - Italian flag inspired */
 header {
-  background: linear-gradient(135deg, #2c3e50, #3498db);
+  background: linear-gradient(135deg, #1a472a, #2d6a4f);
   color: white;
   padding: 30px 0;
   text-align: center;
+  border-bottom: 4px solid #c62828;
 }
 
 header h1 {
-  font-size: 2rem;
-  margin-bottom: 5px;
+  font-size: 2.2rem;
+  margin-bottom: 2px;
+  font-style: italic;
+  letter-spacing: 1px;
 }
 
 .subtitle {
-  opacity: 0.9;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  opacity: 0.95;
+  font-weight: 600;
+}
+
+.tagline {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+/* Footer */
+footer {
+  background: #2c2c2c;
+  color: #ccc;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px;
+  font-size: 0.85rem;
+}
+
+footer p + p {
+  margin-top: 4px;
 }
 
 /* Layout */
@@ -49,44 +73,31 @@ header h1 {
 .order-section h2 {
   margin-bottom: 15px;
   font-size: 1.3rem;
+  color: #1a472a;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
 }
 
 .filter-btn {
   padding: 8px 16px;
-  border: 2px solid #3498db;
+  border: 2px solid #1a472a;
   background: white;
-  color: #3498db;
+  color: #1a472a;
   border-radius: 25px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: all 0.2s;
 }
 
 .filter-btn:hover,
 .filter-btn.active {
-  background: #3498db;
+  background: #1a472a;
   color: white;
-}
-
-.dietary-filters {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-}
-
-.dietary-filters label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
 }
 
 /* Menu Grid */
@@ -102,6 +113,7 @@ header h1 {
   padding: 18px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid #1a472a;
 }
 
 .menu-card:hover {
@@ -109,41 +121,37 @@ header h1 {
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
+.menu-card.is-package {
+  border-left-color: #c62828;
+  background: #fffbf0;
+}
+
 .menu-card .category-badge {
   display: inline-block;
   padding: 2px 10px;
-  background: #ecf0f1;
+  background: #e8f5e9;
   border-radius: 12px;
   font-size: 0.75rem;
   text-transform: uppercase;
-  color: #7f8c8d;
+  color: #2e7d32;
   margin-bottom: 8px;
 }
 
+.menu-card.is-package .category-badge {
+  background: #fce4ec;
+  color: #c62828;
+}
+
 .menu-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 5px;
+  color: #1a472a;
 }
 
 .menu-card .description {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: #666;
-  margin-bottom: 10px;
-}
-
-.menu-card .tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
   margin-bottom: 12px;
-}
-
-.menu-card .tag {
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  background: #e8f5e9;
-  color: #2e7d32;
-  border-radius: 10px;
 }
 
 .menu-card .card-footer {
@@ -155,12 +163,12 @@ header h1 {
 .menu-card .price {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #c62828;
 }
 
 .menu-card .price small {
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: #999;
 }
 
@@ -173,9 +181,9 @@ header h1 {
 .qty-btn {
   width: 32px;
   height: 32px;
-  border: 2px solid #3498db;
+  border: 2px solid #1a472a;
   background: white;
-  color: #3498db;
+  color: #1a472a;
   border-radius: 50%;
   font-size: 1.1rem;
   cursor: pointer;
@@ -186,17 +194,17 @@ header h1 {
 }
 
 .qty-btn:hover {
-  background: #3498db;
+  background: #1a472a;
   color: white;
 }
 
 .qty-btn.add-btn {
-  background: #3498db;
+  background: #1a472a;
   color: white;
 }
 
 .qty-btn.add-btn:hover {
-  background: #2980b9;
+  background: #153d23;
 }
 
 .qty-value {
@@ -213,6 +221,7 @@ header h1 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   position: sticky;
   top: 20px;
+  border-top: 4px solid #c62828;
 }
 
 .order-items {
@@ -254,6 +263,7 @@ header h1 {
   font-weight: 600;
   margin-left: 10px;
   white-space: nowrap;
+  color: #c62828;
 }
 
 .order-item .remove-btn {
@@ -282,17 +292,17 @@ header h1 {
 
 .total-final {
   font-weight: 700;
-  font-size: 1.1rem;
-  border-top: 1px solid #eee;
+  font-size: 1.15rem;
   padding-top: 10px;
   margin-top: 5px;
+  color: #1a472a;
 }
 
 /* Buttons */
 .btn-primary {
   width: 100%;
   padding: 14px;
-  background: #3498db;
+  background: #c62828;
   color: white;
   border: none;
   border-radius: 8px;
@@ -303,7 +313,7 @@ header h1 {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2980b9;
+  background: #a31f1f;
 }
 
 .btn-primary:disabled {
@@ -334,6 +344,10 @@ header h1 {
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+}
+
+.modal-content h2 {
+  color: #1a472a;
 }
 
 .modal-close {
@@ -367,6 +381,7 @@ header h1 {
   font-weight: 600;
   font-size: 0.9rem;
   margin-bottom: 5px;
+  color: #1a472a;
 }
 
 .form-group input,
@@ -381,19 +396,21 @@ header h1 {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #1a472a;
 }
 
 .modal-summary {
-  background: #f9f9f9;
+  background: #f5f9f6;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 20px;
+  border: 1px solid #e0e8e2;
 }
 
 .modal-summary h3 {
   margin-bottom: 10px;
   font-size: 1rem;
+  color: #1a472a;
 }
 
 .modal-summary .summary-item {
@@ -421,7 +438,7 @@ header h1 {
 .checkmark {
   width: 70px;
   height: 70px;
-  background: #27ae60;
+  background: #1a472a;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -433,12 +450,17 @@ header h1 {
 
 .confirmation h2 {
   margin-bottom: 15px;
-  color: #27ae60;
+  color: #1a472a;
 }
 
 .confirmation p {
   margin-bottom: 10px;
   color: #666;
+}
+
+.contact-note {
+  margin-top: 15px;
+  font-size: 0.95rem;
 }
 
 .confirmation .btn-primary {
@@ -459,5 +481,8 @@ header h1 {
   }
   .menu-grid {
     grid-template-columns: 1fr;
+  }
+  header h1 {
+    font-size: 1.6rem;
   }
 }

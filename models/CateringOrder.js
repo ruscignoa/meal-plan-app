@@ -15,7 +15,7 @@ const orderItemSchema = new mongoose.Schema({
     required: true,
     min: 1,
   },
-  pricePerPerson: {
+  unitPrice: {
     type: Number,
     required: true,
   },
@@ -73,10 +73,6 @@ const cateringOrderSchema = new mongoose.Schema({
     default: '',
   },
   subtotal: {
-    type: Number,
-    required: true,
-  },
-  serviceFee: {
     type: Number,
     required: true,
   },

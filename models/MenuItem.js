@@ -13,29 +13,25 @@ const menuItemSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['appetizers', 'entrees', 'sides', 'desserts', 'beverages'],
+    enum: ['sandwiches', 'specialty-sandwiches', 'pasta', 'chicken', 'meat-seafood', 'vegetables', 'catering-packages', 'group-lunch'],
   },
-  pricePerPerson: {
+  price: {
     type: Number,
     required: true,
     min: 0,
   },
-  minimumOrder: {
-    type: Number,
-    default: 10,
+  pricingType: {
+    type: String,
+    enum: ['per-item', 'per-person', 'per-package'],
+    default: 'per-item',
   },
-  dietaryTags: {
-    type: [String],
-    enum: ['vegetarian', 'vegan', 'gluten-free', 'dairy-free', 'nut-free'],
-    default: [],
+  servesCount: {
+    type: Number,
+    default: null,
   },
   isAvailable: {
     type: Boolean,
     default: true,
-  },
-  imageUrl: {
-    type: String,
-    default: '',
   },
 }, { timestamps: true });
 

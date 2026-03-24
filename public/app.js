@@ -1,10 +1,19 @@
 const API_BASE = '/api/catering';
-const SERVICE_FEE_RATE = 0.18;
+
+const CATEGORY_LABELS = {
+  'catering-packages': 'Catering Package',
+  'group-lunch': 'Group Lunch',
+  'sandwiches': 'Sandwich',
+  'specialty-sandwiches': 'Specialty Sandwich',
+  'pasta': 'Pasta',
+  'chicken': 'Chicken',
+  'meat-seafood': 'Meat & Seafood',
+  'vegetables': 'Vegetables',
+};
 
 let menuItems = [];
 let order = {}; // { menuItemId: { item, quantity } }
 let activeCategory = 'all';
-let activeDietaryFilters = new Set();
 
 // --- Init ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,7 +30,7 @@ async function fetchMenu() {
     renderMenu();
   } catch {
     document.getElementById('menu-items').innerHTML =
-      '<p style="color:#e74c3c;text-align:center;padding:20px;">Failed to load menu. Make sure the server is running and the database is seeded.</p>';
+      '<p style="color:#c62828;text-align:center;padding:20px;">Failed to load menu. Make sure the server is running and the database is seeded.<br><br>Run: <code>POST /api/catering/menu/seed</code></p>';
   }
 }
 
@@ -42,27 +51,11 @@ function setupFilters() {
       renderMenu();
     });
   });
-
-  document.querySelectorAll('.dietary-filters input').forEach(cb => {
-    cb.addEventListener('change', () => {
-      if (cb.checked) {
-        activeDietaryFilters.add(cb.value);
-      } else {
-        activeDietaryFilters.delete(cb.value);
-      }
-      renderMenu();
-    });
-  });
 }
 
 function getFilteredItems() {
   return menuItems.filter(item => {
     if (activeCategory !== 'all' && item.category !== activeCategory) return false;
-    if (activeDietaryFilters.size > 0) {
-      for (const tag of activeDietaryFilters) {
-        if (!item.dietaryTags.includes(tag)) return false;
-      }
-    }
     return true;
   });
 }
@@ -79,16 +72,16 @@ function renderMenu() {
 
   container.innerHTML = filtered.map(item => {
     const qty = order[item._id]?.quantity || 0;
+    const isPackage = item.category === 'catering-packages' || item.category === 'group-lunch';
+    const priceLabel = getPriceLabel(item);
+
     return `
-      <div class="menu-card">
-        <span class="category-badge">${item.category}</span>
+      <div class="menu-card${isPackage ? ' is-package' : ''}">
+        <span class="category-badge">${CATEGORY_LABELS[item.category] || item.category}</span>
         <h3>${escapeHtml(item.name)}</h3>
         <p class="description">${escapeHtml(item.description)}</p>
-        <div class="tags">
-          ${item.dietaryTags.map(t => `<span class="tag">${t}</span>`).join('')}
-        </div>
         <div class="card-footer">
-          <span class="price">$${item.pricePerPerson.toFixed(2)} <small>/person</small></span>
+          <span class="price">$${item.price.toFixed(2)} <small>${priceLabel}</small></span>
           ${qty === 0
             ? `<button class="qty-btn add-btn" onclick="addItem('${item._id}')">+</button>`
             : `<div class="qty-control">
@@ -103,11 +96,18 @@ function renderMenu() {
   }).join('');
 }
 
+function getPriceLabel(item) {
+  if (item.pricingType === 'per-person') return '/person';
+  if (item.pricingType === 'per-package') return item.servesCount ? `/serves ${item.servesCount}` : '/package';
+  return '/each';
+}
+
 // --- Order Management ---
 function addItem(id) {
   const item = menuItems.find(i => i._id === id);
   if (!item) return;
-  order[id] = { item, quantity: item.minimumOrder || 10 };
+  const defaultQty = item.pricingType === 'per-package' ? 1 : (item.pricingType === 'per-person' ? 15 : 5);
+  order[id] = { item, quantity: defaultQty };
   updateUI();
 }
 
@@ -151,15 +151,16 @@ function renderOrderSummary() {
     return;
   }
 
-  let subtotal = 0;
+  let total = 0;
   container.innerHTML = entries.map(([id, { item, quantity }]) => {
-    const itemTotal = item.pricePerPerson * quantity;
-    subtotal += itemTotal;
+    const itemTotal = item.price * quantity;
+    total += itemTotal;
+    const detail = getOrderItemDetail(item, quantity);
     return `
       <div class="order-item">
         <div class="item-info">
           <div class="item-name">${escapeHtml(item.name)}</div>
-          <div class="item-detail">${quantity} servings x $${item.pricePerPerson.toFixed(2)}</div>
+          <div class="item-detail">${detail}</div>
         </div>
         <span class="item-price">$${itemTotal.toFixed(2)}</span>
         <button class="remove-btn" onclick="removeItem('${id}')" title="Remove">&times;</button>
@@ -167,14 +168,15 @@ function renderOrderSummary() {
     `;
   }).join('');
 
-  const serviceFee = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
-  const total = subtotal + serviceFee;
-
-  document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
-  document.getElementById('service-fee').textContent = `$${serviceFee.toFixed(2)}`;
   document.getElementById('total').textContent = `$${total.toFixed(2)}`;
   totalsEl.style.display = 'block';
   checkoutBtn.disabled = false;
+}
+
+function getOrderItemDetail(item, quantity) {
+  if (item.pricingType === 'per-package') return `${quantity} package(s)`;
+  if (item.pricingType === 'per-person') return `${quantity} people x $${item.price.toFixed(2)}`;
+  return `${quantity} x $${item.price.toFixed(2)}`;
 }
 
 // --- Checkout ---
@@ -192,18 +194,15 @@ function openCheckoutModal() {
   const modalItems = document.getElementById('modal-order-items');
   const entries = Object.entries(order);
 
-  let subtotal = 0;
+  let total = 0;
   modalItems.innerHTML = entries.map(([id, { item, quantity }]) => {
-    const itemTotal = item.pricePerPerson * quantity;
-    subtotal += itemTotal;
-    return `<div class="summary-item"><span>${escapeHtml(item.name)} x ${quantity}</span><span>$${itemTotal.toFixed(2)}</span></div>`;
+    const itemTotal = item.price * quantity;
+    total += itemTotal;
+    const detail = getOrderItemDetail(item, quantity);
+    return `<div class="summary-item"><span>${escapeHtml(item.name)} (${detail})</span><span>$${itemTotal.toFixed(2)}</span></div>`;
   }).join('');
 
-  const serviceFee = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
-  const total = subtotal + serviceFee;
-  modalItems.innerHTML += `<div class="summary-item"><span>Service Fee (18%)</span><span>$${serviceFee.toFixed(2)}</span></div>`;
   document.getElementById('modal-total').textContent = `$${total.toFixed(2)}`;
-
   modal.style.display = 'flex';
 }
 

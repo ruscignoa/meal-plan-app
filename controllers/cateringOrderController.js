@@ -1,8 +1,7 @@
-const CateringOrder = require('../models/CateringOrder');
-const MenuItem = require('../models/MenuItem');
+const store = require('../data/store');
 const { validationResult } = require('express-validator');
 
-exports.createOrder = async (req, res) => {
+exports.createOrder = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -15,11 +14,11 @@ exports.createOrder = async (req, res) => {
     let subtotal = 0;
 
     for (const item of items) {
-      const menuItem = await MenuItem.findById(item.menuItemId);
+      const menuItem = store.getMenuItemById(item.menuItemId);
       if (!menuItem) {
         return res.status(400).json({ error: `Menu item not found: ${item.menuItemId}` });
       }
-      if (!menuItem.isAvailable) {
+      if (menuItem.isAvailable === false) {
         return res.status(400).json({ error: `Menu item is unavailable: ${menuItem.name}` });
       }
 
@@ -38,7 +37,7 @@ exports.createOrder = async (req, res) => {
 
     subtotal = Math.round(subtotal * 100) / 100;
 
-    const order = new CateringOrder({
+    const order = store.createOrder({
       customerName,
       customerEmail,
       customerPhone,
@@ -52,16 +51,15 @@ exports.createOrder = async (req, res) => {
       total: subtotal,
     });
 
-    await order.save();
     res.status(201).json(order);
   } catch (err) {
     res.status(500).json({ error: 'Failed to create order.' });
   }
 };
 
-exports.getOrder = async (req, res) => {
+exports.getOrder = (req, res) => {
   try {
-    const order = await CateringOrder.findById(req.params.id);
+    const order = store.getOrderById(req.params.id);
     if (!order) return res.status(404).json({ error: 'Order not found.' });
     res.json(order);
   } catch (err) {
@@ -69,25 +67,21 @@ exports.getOrder = async (req, res) => {
   }
 };
 
-exports.getAllOrders = async (req, res) => {
+exports.getAllOrders = (req, res) => {
   try {
     const filter = {};
     if (req.query.status) filter.status = req.query.status;
-    const orders = await CateringOrder.find(filter).sort({ eventDate: 1 });
+    const orders = store.getAllOrders(filter);
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch orders.' });
   }
 };
 
-exports.updateOrderStatus = async (req, res) => {
+exports.updateOrderStatus = (req, res) => {
   try {
     const { status } = req.body;
-    const order = await CateringOrder.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    );
+    const order = store.updateOrderStatus(req.params.id, status);
     if (!order) return res.status(404).json({ error: 'Order not found.' });
     res.json(order);
   } catch (err) {

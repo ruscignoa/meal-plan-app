@@ -1,34 +1,28 @@
-const MenuItem = require('../models/MenuItem');
+const store = require('../data/store');
 
-exports.getAllMenuItems = async (req, res) => {
+exports.getAllMenuItems = (req, res) => {
   try {
-    const filter = { isAvailable: true };
-    if (req.query.category) {
-      filter.category = req.query.category;
-    }
-    const items = await MenuItem.find(filter).sort({ category: 1, name: 1 });
+    const filter = {};
+    if (req.query.category) filter.category = req.query.category;
+    const items = store.getAllMenuItems(filter);
     res.json(items);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch menu items.' });
   }
 };
 
-exports.createMenuItem = async (req, res) => {
+exports.createMenuItem = (req, res) => {
   try {
-    const item = new MenuItem(req.body);
-    await item.save();
+    const item = store.createMenuItem(req.body);
     res.status(201).json(item);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-exports.updateMenuItem = async (req, res) => {
+exports.updateMenuItem = (req, res) => {
   try {
-    const item = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const item = store.updateMenuItem(req.params.id, req.body);
     if (!item) return res.status(404).json({ error: 'Menu item not found.' });
     res.json(item);
   } catch (err) {
@@ -36,9 +30,9 @@ exports.updateMenuItem = async (req, res) => {
   }
 };
 
-exports.deleteMenuItem = async (req, res) => {
+exports.deleteMenuItem = (req, res) => {
   try {
-    const item = await MenuItem.findByIdAndDelete(req.params.id);
+    const item = store.deleteMenuItem(req.params.id);
     if (!item) return res.status(404).json({ error: 'Menu item not found.' });
     res.json({ message: 'Menu item deleted.' });
   } catch (err) {
@@ -46,11 +40,11 @@ exports.deleteMenuItem = async (req, res) => {
   }
 };
 
-exports.seedMenuItems = async (req, res) => {
+exports.seedMenuItems = (req, res) => {
   try {
-    const existing = await MenuItem.countDocuments();
+    const existing = store.countMenuItems();
     if (existing > 0) {
-      return res.status(400).json({ error: 'Menu already has items. Delete them first to re-seed.' });
+      return res.status(400).json({ error: 'Menu already has items. Delete the data/menu.json file to re-seed.' });
     }
 
     const sampleItems = [
@@ -93,7 +87,7 @@ exports.seedMenuItems = async (req, res) => {
       { name: 'New York Botanical', description: 'Fresh mozzarella, arugula, sun-dried peppers, marinated eggplant, pesto, vinaigrette.', category: 'specialty-sandwiches', price: 12.00, pricingType: 'per-item' },
       { name: 'The Bronx Zoo', description: 'Prosciutto, mortadella, capicola, fried eggplant, fresh mozzarella, vinaigrette.', category: 'specialty-sandwiches', price: 12.00, pricingType: 'per-item' },
 
-      // === PASTA (hot tray items for catering) ===
+      // === PASTA ===
       { name: 'Baked Ziti', description: 'Classic baked ziti with ricotta and mozzarella.', category: 'pasta', price: 15.00, pricingType: 'per-person' },
       { name: 'Fusilli with Sausage', description: 'Fusilli pasta tossed with Italian sausage in marinara.', category: 'pasta', price: 15.00, pricingType: 'per-person' },
       { name: 'Manicotti', description: 'Ricotta-stuffed manicotti in marinara sauce.', category: 'pasta', price: 15.00, pricingType: 'per-person' },
@@ -152,7 +146,7 @@ exports.seedMenuItems = async (req, res) => {
       { name: 'Catering for 100', description: '15 hot trays + sandwich basket/stuffed focaccia, or 20 food trays. Includes bread.', category: 'catering-packages', price: 1500.00, pricingType: 'per-package', servesCount: 100 },
     ];
 
-    await MenuItem.insertMany(sampleItems);
+    store.insertManyMenuItems(sampleItems);
     res.status(201).json({ message: `Seeded ${sampleItems.length} menu items.` });
   } catch (err) {
     res.status(500).json({ error: 'Failed to seed menu items.' });

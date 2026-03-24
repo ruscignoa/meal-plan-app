@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "b3f86478e485c05fca884451",
+    "customerName": "Test Customer",
+    "customerEmail": "test@example.com",
+    "customerPhone": "718-555-1234",
+    "eventDate": "2026-04-15",
+    "eventTime": "12:00",
+    "eventLocation": "123 Test St",
+    "guestCount": 20,
+    "items": [
+      {
+        "menuItem": "146cbd76201f13a528dc5587",
+        "name": "The Italian Combo",
+        "quantity": 10,
+        "unitPrice": 12,
+        "subtotal": 120
+      }
+    ],
+    "specialInstructions": "",
+    "subtotal": 120,
+    "total": 120,
+    "status": "pending",
+    "createdAt": "2026-03-24T13:27:12.036Z"
+  }
+]

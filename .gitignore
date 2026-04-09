@@ -1,0 +1,4 @@
+node_modules/
+data/menu.json
+data/orders.json
+.env

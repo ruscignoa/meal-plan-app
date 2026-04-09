@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catering Order Builder | Joe's Italian Deli</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Joe's Italian Deli</h1>
+      <p class="subtitle">Catering Order Builder</p>
+      <p class="tagline">Authentic Italian from the Bronx since 1980 &bull; 685 E. 187th Street</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="builder-layout">
+      <!-- Left: Menu Selection -->
+      <section class="menu-section">
+        <h2>Build Your Catering Order</h2>
+
+        <div class="filters">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="catering-packages">Catering Packages</button>
+          <button class="filter-btn" data-category="group-lunch">Group Lunch</button>
+          <button class="filter-btn" data-category="sandwiches">Sandwiches</button>
+          <button class="filter-btn" data-category="specialty-sandwiches">Specialty Sandwiches</button>
+          <button class="filter-btn" data-category="pasta">Pasta</button>
+          <button class="filter-btn" data-category="chicken">Chicken</button>
+          <button class="filter-btn" data-category="meat-seafood">Meat &amp; Seafood</button>
+          <button class="filter-btn" data-category="vegetables">Vegetables</button>
+        </div>
+
+        <div id="menu-items" class="menu-grid">
+          <!-- Menu items populated by JS -->
+        </div>
+      </section>
+
+      <!-- Right: Order Summary -->
+      <aside class="order-section">
+        <h2>Your Order</h2>
+
+        <div id="order-items" class="order-items">
+          <p class="empty-order">No items selected yet. Browse the menu to get started!</p>
+        </div>
+
+        <div id="order-totals" class="order-totals" style="display:none;">
+          <div class="total-row total-final">
+            <span>Total</span>
+            <span id="total">$0.00</span>
+          </div>
+        </div>
+
+        <button id="checkout-btn" class="btn-primary" disabled>Continue to Event Details</button>
+      </aside>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="checkout-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <h2>Event Details</h2>
+        <form id="order-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="customerName">Your Name *</label>
+              <input type="text" id="customerName" required>
+            </div>
+            <div class="form-group">
+              <label for="customerEmail">Email *</label>
+              <input type="email" id="customerEmail" required>
+            </div>
+            <div class="form-group">
+              <label for="customerPhone">Phone *</label>
+              <input type="tel" id="customerPhone" required>
+            </div>
+            <div class="form-group">
+              <label for="guestCount">Number of Guests *</label>
+              <input type="number" id="guestCount" min="1" value="20" required>
+            </div>
+            <div class="form-group">
+              <label for="eventDate">Event Date *</label>
+              <input type="date" id="eventDate" required>
+            </div>
+            <div class="form-group">
+              <label for="eventTime">Event Time *</label>
+              <input type="time" id="eventTime" required>
+            </div>
+            <div class="form-group full-width">
+              <label for="eventLocation">Event Location *</label>
+              <input type="text" id="eventLocation" required>
+            </div>
+            <div class="form-group full-width">
+              <label for="specialInstructions">Special Instructions</label>
+              <textarea id="specialInstructions" rows="3" placeholder="Allergies, setup preferences, specific sandwich selections, etc."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-summary">
+            <h3>Order Summary</h3>
+            <div id="modal-order-items"></div>
+            <div class="total-row total-final">
+              <span>Total</span>
+              <span id="modal-total">$0.00</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary">Place Order</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation -->
+    <div id="confirmation" class="confirmation" style="display:none;">
+      <div class="confirmation-content">
+        <div class="checkmark">&#10003;</div>
+        <h2>Order Submitted!</h2>
+        <p>Your catering order has been received. We'll send a confirmation to <strong id="confirm-email"></strong>.</p>
+        <p>Order ID: <strong id="confirm-id"></strong></p>
+        <p class="contact-note">Questions? Call us at <strong>718.367.7979</strong></p>
+        <button class="btn-primary" onclick="location.reload()">Place Another Order</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Joe's Italian Deli &bull; 685 E. 187th Street, Bronx, NY 10458 &bull; 718.367.7979</p>
+      <p>Mon&ndash;Sat 8:30am&ndash;5:30pm &bull; Sun 8:30am&ndash;3:30pm</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
